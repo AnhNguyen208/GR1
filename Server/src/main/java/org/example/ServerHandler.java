@@ -52,7 +52,7 @@ public class ServerHandler implements Runnable{
                         break;
                     case "USER_INFO" :
                         User user = userService.findUserById(Long.valueOf(requestList.get(1)));
-                        message = "FRIEND_INFO" + "|" + user.toString();
+                        message = "USER_INFO" + "|" + user.toString();
                         out.println(message);
                         break;
                     case "UPDATE_PROFILE":
@@ -61,8 +61,8 @@ public class ServerHandler implements Runnable{
                         message = "SUCCESS" + "|";
                         out.println(message);
                         break;
-                    case "NUMBER_USER":
-                        message = userService.numberUser();
+                    case "NUMBER_FRIEND_SUGGESTION":
+                        message = userService.numberFriendSuggestion(Long.valueOf(requestList.get(1)));
                         out.println(message);
                         break;
                     case "UNFRIEND":
@@ -70,8 +70,22 @@ public class ServerHandler implements Runnable{
                         message = "SUCCESS" + "|";
                         out.println(message);
                         break;
-                    case "FRIEND_REQUEST":
-                        friendService.friendRequest(Long.valueOf(requestList.get(1)), Long.valueOf(requestList.get(2)));
+                    case "SEND_FRIEND_REQUEST":
+                        friendService.sendFriendRequest(Long.valueOf(requestList.get(1)), Long.valueOf(requestList.get(2)));
+                        message = "SUCCESS" + "|";
+                        out.println(message);
+                        break;
+                    case "NUMBER_FRIEND_REQUEST":
+                        message = userService.numberFriendRequest(Long.valueOf(requestList.get(1)));
+                        out.println(message);
+                        break;
+                    case "ACCEPT_REQUEST":
+                        friendService.acceptFriendRequest(Long.valueOf(requestList.get(1)), Long.valueOf(requestList.get(2)));
+                        message = "SUCCESS" + "|";
+                        out.println(message);
+                        break;
+                    case "DENIED_REQUEST":
+                        friendService.deniedFriendRequest(Long.valueOf(requestList.get(1)), Long.valueOf(requestList.get(2)));
                         message = "SUCCESS" + "|";
                         out.println(message);
                         break;

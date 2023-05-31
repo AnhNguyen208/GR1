@@ -52,9 +52,9 @@ public class Handler {
         return userList;
     }
 
-    public List<User> userList() {
+    public List<User> friendSuggestionList(Long id) {
         List<User> userList = new ArrayList<>();
-        String msg = connectServer.sendRequest(Request.NUMBER_USER + "|");
+        String msg = connectServer.sendRequest(Request.NUMBER_FRIEND_SUGGESTION + "|" + id + "|");
         List<String> responseList = List.of(msg.split("[|]"));
         Integer numberUser = Integer.valueOf(responseList.get(1));
         if(numberUser > 0) {
@@ -76,7 +76,6 @@ public class Handler {
             user.setName(responseList.get(3));
             user.setPhoneNumber(responseList.get(4));
             user.setDob(new SimpleDateFormat("yyyy-MM-dd").parse(responseList.get(5)));
-
             return user;
         } catch (ParseException ex) {
             throw new RuntimeException(ex);
@@ -103,8 +102,8 @@ public class Handler {
         }
     }
 
-    public boolean friendRequest(Long id1, Long id2) {
-        String msg = connectServer.sendRequest(Request.FRIEND_REQUEST + "|" + id1 + "|" + id2 + "|");
+    public boolean sendFriendRequest(Long id1, Long id2) {
+        String msg = connectServer.sendRequest(Request.SEND_FRIEND_REQUEST + "|" + id1 + "|" + id2 + "|");
         List<String> responseList = List.of(msg.split("[|]"));
         if(responseList.get(0).equals(Response.SUCCESS.toString())) {
             return true;
@@ -113,4 +112,37 @@ public class Handler {
         }
     }
 
+    public List<User> friendRequestList(Long id) {
+        List<User> userList = new ArrayList<>();
+        String msg = connectServer.sendRequest(Request.NUMBER_FRIEND_REQUEST + "|" + id + "|");
+        List<String> responseList = List.of(msg.split("[|]"));
+        Integer numberUser = Integer.valueOf(responseList.get(1));
+        if(numberUser > 0) {
+            for(int i = 0; i < numberUser; i++) {
+                Long idUser = Long.valueOf(responseList.get(i+2));
+                userList.add(userInfo(idUser));
+            }
+        }
+        return userList;
+    }
+
+    public boolean acceptFriendRequest(Long id1, Long id2) {
+        String msg = connectServer.sendRequest(Request.ACCEPT_REQUEST + "|" + id1 + "|" + id2 + "|");
+        List<String> responseList = List.of(msg.split("[|]"));
+        if(responseList.get(0).equals(Response.SUCCESS.toString())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deniedFriendRequest(Long id1, Long id2) {
+        String msg = connectServer.sendRequest(Request.DENIED_REQUEST + "|" + id1 + "|" + id2 + "|");
+        List<String> responseList = List.of(msg.split("[|]"));
+        if(responseList.get(0).equals(Response.SUCCESS.toString())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

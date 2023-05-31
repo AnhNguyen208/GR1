@@ -18,9 +18,30 @@ public class FriendService {
         stm.executeUpdate(sql);
     }
 
-    public void friendRequest(Long id1, Long id2) throws SQLException {
+    public void sendFriendRequest(Long id1, Long id2) throws SQLException {
         String sql = "INSERT INTO friend_request " +
                 "(`id_user1`, `id_user2`, `status`) VALUES ('"+ id1 +"', '" + id2 + "', '0')";
+        Statement stm = ConnectDB.getConnection().createStatement();
+        stm.executeUpdate(sql);
+    }
+
+    public void acceptFriendRequest(Long id1, Long id2) throws SQLException {
+        String sql = "INSERT INTO friends " +
+                "(`id_user1`, `id_user2`) VALUES ('"+ id1 +"', '" + id2 + "')";
+        Statement stm = ConnectDB.getConnection().createStatement();
+        stm.executeUpdate(sql);
+
+        sql = "INSERT INTO friends " +
+                "(`id_user2`, `id_user1`) VALUES ('"+ id1 +"', '" + id2 + "')";
+        stm = ConnectDB.getConnection().createStatement();
+        stm.executeUpdate(sql);
+
+        deniedFriendRequest(id1, id2);
+    }
+
+    public void deniedFriendRequest(Long id1, Long id2) throws SQLException {
+        String sql = "DELETE FROM friend_request " +
+                " WHERE id_user2 = " + id1 + " && id_user1 = " +id2;
         Statement stm = ConnectDB.getConnection().createStatement();
         stm.executeUpdate(sql);
     }

@@ -82,16 +82,37 @@ public class UserService {
         return user;
     }
 
-    public String numberUser() throws SQLException {
-        String msg = "NUMBER_USER" + "|";
+    public String numberFriendSuggestion(Long id) throws SQLException {
+        String msg = "NUMBER_FRIEND_SUGGESTION" + "|";
         List<Long> idList = new ArrayList<>();
         Integer num = 0;
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users WHERE id NOT IN (SELECT id FROM users WHERE id = " + id + ")" +
+                "AND id NOT IN (SELECT id_user2 FROM friend_request WHERE id_user1 = " + id + ")" +
+                "AND id NOT IN (SELECT id_user1 FROM friend_request WHERE id_user2 = " + id + ")" +
+                "AND id NOT IN (SELECT id_user2 FROM friends WHERE id_user1 = "+ id +")";
         Statement stm = ConnectDB.getConnection().createStatement();
         ResultSet res = stm.executeQuery(sql);
         while(res.next()) {
             num++;
             idList.add(res.getLong("id"));
+        }
+        msg += num + "|";
+        for (Long i: idList) {
+            msg += i + "|";
+        }
+        return msg;
+    }
+
+    public String numberFriendRequest(Long id) throws SQLException {
+        String msg = "NUMBER_FRIEND_REQUEST" + "|";
+        List<Long> idList = new ArrayList<>();
+        Integer num = 0;
+        String sql = "SELECT * FROM friend_request WHERE id_user2 = '" + id + "';";
+        Statement stm = ConnectDB.getConnection().createStatement();
+        ResultSet res = stm.executeQuery(sql);
+        while(res.next()) {
+            num++;
+            idList.add(res.getLong("id_user1"));
         }
         msg += num + "|";
         for (Long i: idList) {

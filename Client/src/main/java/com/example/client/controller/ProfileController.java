@@ -123,7 +123,5 @@ public class ProfileController extends BaseController implements Initializable {
                 }
             }
         });
-
-
     }
 }
